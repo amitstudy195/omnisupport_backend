@@ -22,6 +22,7 @@ const server = http.createServer(app);
 // CORS configuration for REST API and credentials
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  'https://omnisupport.netlify.app',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:5174',
@@ -36,10 +37,13 @@ app.use(cors({
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(null, true); // Allow during local development if different ports
+      callback(new Error('CORS origin not allowed'), false);
     }
   },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
+  optionsSuccessStatus: 200,
 }));
 
 // Body parsers and cookie middleware
